@@ -1,0 +1,325 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "accelerator": "GPU",
+    "colab": {
+      "name": "S+P Week 2 Lesson 1.ipynb",
+      "provenance": [],
+      "toc_visible": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "zX4Kg8DUTKWO"
+      },
+      "source": [
+        "#@title Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+        "# you may not use this file except in compliance with the License.\n",
+        "# You may obtain a copy of the License at\n",
+        "#\n",
+        "# https://www.apache.org/licenses/LICENSE-2.0\n",
+        "#\n",
+        "# Unless required by applicable law or agreed to in writing, software\n",
+        "# distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+        "# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+        "# See the License for the specific language governing permissions and\n",
+        "# limitations under the License."
+      ],
+      "execution_count": 1,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "s6eq-RBcQ_Zr"
+      },
+      "source": [
+        "try:\n",
+        "  # %tensorflow_version only exists in Colab.\n",
+        "  %tensorflow_version 2.x\n",
+        "except Exception:\n",
+        "  pass"
+      ],
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "BOjujz601HcS",
+        "outputId": "af92d919-0c09-40df-b250-83b12ae8ae26",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "import tensorflow as tf\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "print(tf.__version__)"
+      ],
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "2.3.0\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "asEdslR_05O_",
+        "outputId": "536b5132-66a0-46d9-c3a5-6a0b8c00d425",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "dataset = tf.data.Dataset.range(10)\n",
+        "for val in dataset:\n",
+        "   print(val.numpy())"
+      ],
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "0\n",
+            "1\n",
+            "2\n",
+            "3\n",
+            "4\n",
+            "5\n",
+            "6\n",
+            "7\n",
+            "8\n",
+            "9\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Lrv_ghSt1lgQ",
+        "outputId": "a376edee-5b8d-4ab4-cd55-6dbc20a8b339",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "dataset = tf.data.Dataset.range(10)\n",
+        "dataset = dataset.window(5, shift=1)\n",
+        "for window_dataset in dataset:\n",
+        "  for val in window_dataset:\n",
+        "    print(val.numpy(), end=\" \")\n",
+        "  print()"
+      ],
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "0 1 2 3 4 \n",
+            "1 2 3 4 5 \n",
+            "2 3 4 5 6 \n",
+            "3 4 5 6 7 \n",
+            "4 5 6 7 8 \n",
+            "5 6 7 8 9 \n",
+            "6 7 8 9 \n",
+            "7 8 9 \n",
+            "8 9 \n",
+            "9 \n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "QLEq6MG-2DN2",
+        "outputId": "671fbda1-e399-4e5f-e21f-0d25cb1c9623",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "dataset = tf.data.Dataset.range(10)\n",
+        "dataset = dataset.window(5, shift=1, drop_remainder=True)\n",
+        "for window_dataset in dataset:\n",
+        "  for val in window_dataset:\n",
+        "    print(val.numpy(), end=\" \")\n",
+        "  print()"
+      ],
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "0 1 2 3 4 \n",
+            "1 2 3 4 5 \n",
+            "2 3 4 5 6 \n",
+            "3 4 5 6 7 \n",
+            "4 5 6 7 8 \n",
+            "5 6 7 8 9 \n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "PJ9CAHlJ2ODe",
+        "outputId": "e4ba6dfe-1978-4c81-caf3-90fc43aa92c3",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "dataset = tf.data.Dataset.range(10)\n",
+        "dataset = dataset.window(5, shift=1, drop_remainder=True)\n",
+        "dataset = dataset.flat_map(lambda window: window.batch(5))\n",
+        "for window in dataset:\n",
+        "  print(window.numpy())\n"
+      ],
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "[0 1 2 3 4]\n",
+            "[1 2 3 4 5]\n",
+            "[2 3 4 5 6]\n",
+            "[3 4 5 6 7]\n",
+            "[4 5 6 7 8]\n",
+            "[5 6 7 8 9]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "DryEZ2Mz2nNV",
+        "outputId": "a0ddd37d-46ef-4d47-c90c-0583158eca50",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "dataset = tf.data.Dataset.range(10)\n",
+        "dataset = dataset.window(5, shift=1, drop_remainder=True)\n",
+        "dataset = dataset.flat_map(lambda window: window.batch(5))\n",
+        "dataset = dataset.map(lambda window: (window[:-1], window[-1:]))\n",
+        "for x,y in dataset:\n",
+        "  print(x.numpy(), y.numpy())"
+      ],
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "[0 1 2 3] [4]\n",
+            "[1 2 3 4] [5]\n",
+            "[2 3 4 5] [6]\n",
+            "[3 4 5 6] [7]\n",
+            "[4 5 6 7] [8]\n",
+            "[5 6 7 8] [9]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "1tl-0BOKkEtk",
+        "outputId": "68f46b9e-c6e3-436d-c915-904859c5d5ea",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "dataset = tf.data.Dataset.range(10)\n",
+        "dataset = dataset.window(5, shift=1, drop_remainder=True)\n",
+        "dataset = dataset.flat_map(lambda window: window.batch(5))\n",
+        "dataset = dataset.map(lambda window: (window[:-1], window[-1:]))\n",
+        "dataset = dataset.shuffle(buffer_size=10)\n",
+        "for x,y in dataset:\n",
+        "  print(x.numpy(), y.numpy())\n"
+      ],
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "[2 3 4 5] [6]\n",
+            "[1 2 3 4] [5]\n",
+            "[0 1 2 3] [4]\n",
+            "[3 4 5 6] [7]\n",
+            "[4 5 6 7] [8]\n",
+            "[5 6 7 8] [9]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Wa0PNwxMGapy",
+        "outputId": "609b87bc-0c87-40a9-a4c1-4daa85ed6872",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "source": [
+        "dataset = tf.data.Dataset.range(10)\n",
+        "dataset = dataset.window(5, shift=1, drop_remainder=True)\n",
+        "dataset = dataset.flat_map(lambda window: window.batch(5))\n",
+        "dataset = dataset.map(lambda window: (window[:-1], window[-1:]))\n",
+        "dataset = dataset.shuffle(buffer_size=10)\n",
+        "dataset = dataset.batch(2).prefetch(1)\n",
+        "for x,y in dataset:\n",
+        "  print(\"x = \", x.numpy())\n",
+        "  print(\"y = \", y.numpy())\n"
+      ],
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "x =  [[2 3 4 5]\n",
+            " [1 2 3 4]]\n",
+            "y =  [[6]\n",
+            " [5]]\n",
+            "x =  [[4 5 6 7]\n",
+            " [0 1 2 3]]\n",
+            "y =  [[8]\n",
+            " [4]]\n",
+            "x =  [[3 4 5 6]\n",
+            " [5 6 7 8]]\n",
+            "y =  [[7]\n",
+            " [9]]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    }
+  ]
+}
